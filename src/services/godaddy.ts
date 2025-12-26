@@ -26,7 +26,7 @@ export class GoDaddyService {
   async listDomains(): Promise<Array<{ domain: string; status: string }>> {
     const res = await fetch(`${API_BASE}/domains`, { headers: this.headers });
     if (!res.ok) throw new Error(`GoDaddy API error: ${res.status}`);
-    return res.json();
+    return res.json() as Promise<Array<{ domain: string; status: string }>>;
   }
 
   async getDNSRecords(domain: string): Promise<DNSRecord[]> {
@@ -34,7 +34,7 @@ export class GoDaddyService {
       headers: this.headers,
     });
     if (!res.ok) throw new Error(`GoDaddy API error: ${res.status}`);
-    return res.json();
+    return res.json() as Promise<DNSRecord[]>;
   }
 
   async setGitHubPagesRecords(domain: string, githubUser: string): Promise<void> {
