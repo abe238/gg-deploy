@@ -64,7 +64,9 @@ jobs:
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
         with:
+          updaterJsonKeepUniversal: true
           tagName: v__VERSION__
           releaseName: 'GG Deploy v__VERSION__'
           releaseBody: |
@@ -91,3 +93,91 @@ jobs:
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
+
+  generate-updater-manifest:
+    needs: build-desktop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: version
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+          else
+            echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Download release assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          mkdir -p artifacts
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.sig" || true
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.tar.gz" || true
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.zip" || true
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.AppImage" || true
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.deb" || true
+          gh release download "v${{ steps.version.outputs.version }}" -D artifacts --pattern "*.msi" || true
+          ls -la artifacts/
+
+      - name: Generate latest.json
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          RELEASE_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          BASE_URL="https://github.com/abe238/gg-deploy/releases/download/v${VERSION}"
+
+          # Read signatures
+          MACOS_ARM_SIG=""
+          MACOS_X64_SIG=""
+          LINUX_SIG=""
+          WINDOWS_SIG=""
+
+          if [ -f "artifacts/GG Deploy_${VERSION}_aarch64.app.tar.gz.sig" ]; then
+            MACOS_ARM_SIG=$(cat "artifacts/GG Deploy_${VERSION}_aarch64.app.tar.gz.sig")
+          fi
+          if [ -f "artifacts/GG Deploy_${VERSION}_x64.app.tar.gz.sig" ]; then
+            MACOS_X64_SIG=$(cat "artifacts/GG Deploy_${VERSION}_x64.app.tar.gz.sig")
+          fi
+          if [ -f "artifacts/GG Deploy_${VERSION}_amd64.AppImage.tar.gz.sig" ]; then
+            LINUX_SIG=$(cat "artifacts/GG Deploy_${VERSION}_amd64.AppImage.tar.gz.sig")
+          fi
+          if [ -f "artifacts/GG Deploy_${VERSION}_x64-setup.nsis.zip.sig" ]; then
+            WINDOWS_SIG=$(cat "artifacts/GG Deploy_${VERSION}_x64-setup.nsis.zip.sig")
+          fi
+
+          cat > latest.json << EOF
+          {
+            "version": "${VERSION}",
+            "notes": "GG Deploy v${VERSION} - Free hosting deserves free tooling.",
+            "pub_date": "${RELEASE_DATE}",
+            "platforms": {
+              "darwin-aarch64": {
+                "signature": "${MACOS_ARM_SIG}",
+                "url": "${BASE_URL}/GG.Deploy_${VERSION}_aarch64.app.tar.gz"
+              },
+              "darwin-x86_64": {
+                "signature": "${MACOS_X64_SIG}",
+                "url": "${BASE_URL}/GG.Deploy_${VERSION}_x64.app.tar.gz"
+              },
+              "linux-x86_64": {
+                "signature": "${LINUX_SIG}",
+                "url": "${BASE_URL}/GG.Deploy_${VERSION}_amd64.AppImage.tar.gz"
+              },
+              "windows-x86_64": {
+                "signature": "${WINDOWS_SIG}",
+                "url": "${BASE_URL}/GG.Deploy_${VERSION}_x64-setup.nsis.zip"
+              }
+            }
+          }
+          EOF
+          cat latest.json
+
+      - name: Upload latest.json to release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release upload "v${{ steps.version.outputs.version }}" latest.json --clobber

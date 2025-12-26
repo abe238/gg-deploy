@@ -568,3 +568,83 @@ body {
     padding: 1.25rem;
   }
 }
+
+/* Update Banner */
+.update-banner {
+  background: linear-gradient(135deg, var(--accent) 0%, #059669 100%);
+  border-radius: 12px;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.update-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.update-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: white;
+}
+
+.update-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.5rem 0.875rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.update-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.update-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.update-dismiss {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+}
+
+.update-dismiss:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+}

@@ -4,8 +4,10 @@ import { Command } from 'commander';
 import { planCommand } from './commands/plan.js';
 import { applyCommand } from './commands/apply.js';
 import { statusCommand } from './commands/status.js';
+import { updateCommand } from './commands/update.js';
 import { startMcpServer } from './mcp-server.js';
 import { startUiServer } from './ui-server.js';
+import { checkAndNotify, CURRENT_VERSION } from './lib/update-checker.js';
 import type { OutputFormat } from './types.js';
 
 const program = new Command();
@@ -13,7 +15,7 @@ const program = new Command();
 program
   .name('gg-deploy')
   .description('Free hosting deserves free tooling. Domain → GitHub Pages in 60 seconds.')
-  .version('1.0.0');
+  .version(CURRENT_VERSION);
 
 program
   .command('plan')
@@ -24,6 +26,7 @@ program
   .action(async (domain: string, repo: string, opts: { output: string }) => {
     const output = opts.output as OutputFormat;
     const result = await planCommand(domain, repo, output);
+    if (output === 'human') await checkAndNotify();
     process.exit(result.status === 'success' ? 0 : 1);
   });
 
@@ -36,6 +39,7 @@ program
   .action(async (domain: string, repo: string, opts: { output: string }) => {
     const output = opts.output as OutputFormat;
     const result = await applyCommand(domain, repo, output);
+    if (output === 'human') await checkAndNotify();
     const exitCode = result.status === 'success' ? 0 :
                      result.status === 'partial_success' ? 2 : 3;
     process.exit(exitCode);
@@ -50,6 +54,7 @@ program
   .action(async (domain: string, repo: string, opts: { output: string }) => {
     const output = opts.output as OutputFormat;
     const result = await statusCommand(domain, repo, output);
+    if (output === 'human') await checkAndNotify();
     process.exit(result.status === 'success' ? 0 : 1);
   });
 
@@ -128,6 +133,13 @@ program
   .description('Start local web interface')
   .action(async () => {
     await startUiServer();
+  });
+
+program
+  .command('update')
+  .description('Check for updates and show upgrade instructions')
+  .action(async () => {
+    await updateCommand();
   });
 
 program.parse();

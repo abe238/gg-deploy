@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react'
+import { check, Update } from '@tauri-apps/plugin-updater'
+import { relaunch } from '@tauri-apps/plugin-process'
 
 type AuthStatus = {
   godaddy: { configured: boolean; keyPreview?: string }
@@ -71,6 +73,18 @@ const RefreshIcon = () => (
   </svg>
 )
 
+const DownloadIcon = () => (
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+    <path d="M8 2v8m0 0l-3-3m3 3l3-3M3 12v1a1 1 0 001 1h8a1 1 0 001-1v-1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+)
+
+const CloseSmallIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+    <path d="M4 4l6 6M10 4l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+  </svg>
+)
+
 const EyeIcon = () => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -92,6 +106,12 @@ function App() {
   const [showSettings, setShowSettings] = useState(false)
   const [testing, setTesting] = useState(false)
 
+  // Update checking
+  const [updateAvailable, setUpdateAvailable] = useState<Update | null>(null)
+  const [updateDismissed, setUpdateDismissed] = useState(false)
+  const [updating, setUpdating] = useState(false)
+  const [updateProgress, setUpdateProgress] = useState<string>('')
+
   // Setup form
   const [gdKey, setGdKey] = useState('')
   const [gdSecret, setGdSecret] = useState('')
@@ -109,7 +129,41 @@ function App() {
 
   useEffect(() => {
     checkAuth()
+    checkForUpdates()
   }, [])
+
+  const checkForUpdates = async () => {
+    try {
+      const update = await check()
+      if (update) {
+        setUpdateAvailable(update)
+      }
+    } catch {
+      // Silently ignore update check failures (not in Tauri, network issues, etc.)
+    }
+  }
+
+  const installUpdate = async () => {
+    if (!updateAvailable) return
+    setUpdating(true)
+    setUpdateProgress('Downloading...')
+    try {
+      await updateAvailable.downloadAndInstall((event) => {
+        if (event.event === 'Started') {
+          setUpdateProgress('Downloading...')
+        } else if (event.event === 'Progress') {
+          setUpdateProgress(`Downloading... ${Math.round((event.data.chunkLength / 1024))}KB`)
+        } else if (event.event === 'Finished') {
+          setUpdateProgress('Installing...')
+        }
+      })
+      setUpdateProgress('Restarting...')
+      await relaunch()
+    } catch (e) {
+      setUpdateProgress(`Error: ${e}`)
+      setUpdating(false)
+    }
+  }
 
   const checkAuth = async () => {
     try {
@@ -295,10 +349,35 @@ function App() {
     }
   }
 
+  // Update banner component
+  const UpdateBanner = () => {
+    if (!updateAvailable || updateDismissed) return null
+    return (
+      <div className="update-banner">
+        <div className="update-content">
+          <span className="update-text">
+            {updating ? updateProgress : `Update available: v${updateAvailable.version}`}
+          </span>
+          {!updating && (
+            <button className="update-btn" onClick={installUpdate}>
+              <DownloadIcon /> Update Now
+            </button>
+          )}
+        </div>
+        {!updating && (
+          <button className="update-dismiss" onClick={() => setUpdateDismissed(true)}>
+            <CloseSmallIcon />
+          </button>
+        )}
+      </div>
+    )
+  }
+
   // Loading state
   if (state === 'loading') {
     return (
       <div className="container">
+        <UpdateBanner />
         <div className="loading-state">
           <SpinnerIcon />
           <span>Loading...</span>
@@ -311,6 +390,7 @@ function App() {
   if (state === 'success') {
     return (
       <div className="container">
+        <UpdateBanner />
         <div className="success-banner">
           <div className="success-icon">&#10003;</div>
           <div className="success-title">Site Deployed</div>
@@ -353,6 +433,7 @@ function App() {
 
     return (
       <div className="container">
+        <UpdateBanner />
         <header className="header">
           <h1 className="logo">gg-deploy</h1>
           <p className="tagline">
@@ -538,6 +619,7 @@ function App() {
   // Ready / Deploy state
   return (
     <div className="container">
+      <UpdateBanner />
       <header className="header">
         <div className="header-row">
           <h1 className="logo">gg-deploy</h1>
