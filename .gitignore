@@ -7,6 +7,9 @@ node_modules/
 # Binary build artifacts
 /bin/
 
+# Tauri build output
+/src-tauri/target/
+
 # Environment variables - NEVER COMMIT
 .env
 .env.local

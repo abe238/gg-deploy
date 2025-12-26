@@ -1,0 +1,93 @@
+name: Release Desktop App
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build-desktop:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: 'macos-latest'
+            args: '--target aarch64-apple-darwin'
+            target: 'aarch64-apple-darwin'
+          - platform: 'macos-13'
+            args: '--target x86_64-apple-darwin'
+            target: 'x86_64-apple-darwin'
+          - platform: 'ubuntu-22.04'
+            args: ''
+            target: ''
+          - platform: 'windows-latest'
+            args: ''
+            target: ''
+
+    runs-on: ${{ matrix.platform }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Rust stable
+        uses: dtolnay/rust-action@stable
+        with:
+          targets: ${{ matrix.target }}
+
+      - name: Install dependencies (Ubuntu)
+        if: matrix.platform == 'ubuntu-22.04'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Build UI
+        run: cd ui && npm ci && npm run build
+
+      - name: Build Tauri app
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tagName: v__VERSION__
+          releaseName: 'GG Deploy v__VERSION__'
+          releaseBody: |
+            ## GG Deploy Desktop v__VERSION__
+
+            **Free hosting deserves free tooling.** Domain → GitHub Pages in 60 seconds.
+
+            ### Downloads
+
+            See assets below for your platform:
+            - **macOS**: `.dmg` (Apple Silicon or Intel)
+            - **Windows**: `.msi` installer
+            - **Linux**: `.AppImage` or `.deb`
+
+            ### Quick Start
+
+            1. Download for your platform
+            2. Install and launch
+            3. Enter your GoDaddy + GitHub credentials
+            4. Deploy your domain to GitHub Pages
+
+            ---
+            🤖 Generated with [Claude Code](https://claude.com/claude-code)
+          releaseDraft: false
+          prerelease: false
+          args: ${{ matrix.args }}

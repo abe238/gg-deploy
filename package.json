@@ -15,7 +15,10 @@
     "test": "vitest",
     "prepublishOnly": "npm run build",
     "build:binary": "node scripts/build-binary.mjs",
-    "bundle": "esbuild dist/cli.js --bundle --platform=node --target=node18 --outfile=bin/cli.bundle.cjs --format=cjs --external:fsevents --minify"
+    "bundle": "esbuild dist/cli.js --bundle --platform=node --target=node18 --outfile=bin/cli.bundle.cjs --format=cjs --external:fsevents --minify",
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build"
   },
   "keywords": [
     "cli",
@@ -43,6 +46,7 @@
     "ora": "^8.1.1"
   },
   "devDependencies": {
+    "@tauri-apps/cli": "^2.9.6",
     "@types/node": "^22.10.2",
     "esbuild": "^0.24.2",
     "eslint": "^9.17.0",

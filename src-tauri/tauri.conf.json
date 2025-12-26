@@ -1,0 +1,52 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "GG Deploy",
+  "version": "1.0.0",
+  "identifier": "ai.abediaz.gg-deploy",
+  "build": {
+    "frontendDist": "../ui/dist",
+    "devUrl": "http://localhost:3847"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "GG Deploy",
+        "width": 1024,
+        "height": 768,
+        "minWidth": 800,
+        "minHeight": 600,
+        "resizable": true,
+        "fullscreen": false,
+        "center": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' https://api.godaddy.com https://api.github.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "category": "DeveloperTool",
+    "shortDescription": "Free hosting deserves free tooling. Domain to GitHub Pages in 60 seconds.",
+    "longDescription": "Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt. Works via CLI, desktop app, web UI, or AI assistant (MCP).",
+    "copyright": "Copyright 2025 Abe Diaz",
+    "publisher": "Abe Diaz",
+    "homepage": "https://github.com/abe238/gg-deploy",
+    "license": "AGPL-3.0-only",
+    "macOS": {
+      "minimumSystemVersion": "10.15",
+      "exceptionDomain": ""
+    },
+    "windows": {
+      "allowDowngrades": true
+    }
+  }
+}
