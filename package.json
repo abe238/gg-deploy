@@ -53,7 +53,9 @@
   },
   "pkg": {
     "scripts": "bin/cli.bundle.cjs",
-    "assets": [],
+    "assets": [
+      "ui/dist/**/*"
+    ],
     "targets": [
       "node18-macos-arm64",
       "node18-macos-x64",

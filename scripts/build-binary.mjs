@@ -49,6 +49,7 @@ for (const target of targets) {
   console.log(`  → ${target.name}`);
   try {
     execSync(`npx pkg bin/cli.bundle.cjs \
+      --config package.json \
       --target ${target.pkg} \
       --output bin/${target.name} \
       --compress GZip`, { cwd: projectRoot, stdio: 'pipe' });

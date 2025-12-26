@@ -14,22 +14,22 @@ import {
   getGitHubConfig,
 } from './config.js';
 
-function getProjectRoot(): string {
-  // When running as pkg binary, use snapshot path
+function getUiDir(): string {
+  // When running as pkg binary, assets are at absolute /snapshot/ path
   if ((process as any).pkg) {
-    return dirname(process.execPath);
+    return '/snapshot/gg-deploy/ui/dist';
   }
   // When running as ESM module, derive from import.meta.url
   try {
-    return dirname(fileURLToPath(new URL('.', import.meta.url)));
+    const srcDir = dirname(fileURLToPath(new URL('.', import.meta.url)));
+    return join(srcDir, '..', 'ui', 'dist');
   } catch {
-    // Fallback for CJS bundled by esbuild
-    return process.cwd();
+    // Fallback for CJS bundled by esbuild or direct node execution
+    return join(process.cwd(), 'ui', 'dist');
   }
 }
 
-const __dirname = getProjectRoot();
-const UI_DIR = join(__dirname, 'ui', 'dist');
+const UI_DIR = getUiDir();
 const PORT = 3847;
 
 const MIME_TYPES: Record<string, string> = {

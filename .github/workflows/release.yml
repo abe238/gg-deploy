@@ -82,6 +82,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           npx pkg cli.bundle.cjs \
+            --config package.json \
             --target ${{ matrix.pkg_target }} \
             --output gg-deploy-${{ steps.version.outputs.version }}-${{ matrix.target }} \
             --compress GZip
@@ -89,7 +90,7 @@ jobs:
       - name: Build binary (Windows)
         if: runner.os == 'Windows'
         run: |
-          npx pkg cli.bundle.cjs --target ${{ matrix.pkg_target }} --output gg-deploy-${{ steps.version.outputs.version }}-${{ matrix.target }}.exe --compress GZip
+          npx pkg cli.bundle.cjs --config package.json --target ${{ matrix.pkg_target }} --output gg-deploy-${{ steps.version.outputs.version }}-${{ matrix.target }}.exe --compress GZip
 
       - name: Create tarball (Unix)
         if: runner.os != 'Windows'
