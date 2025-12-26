@@ -7,10 +7,10 @@ export class GitHubService {
 
   async enablePages(repo: string, branch = 'main', path = '/'): Promise<void> {
     try {
-      this.runGh(`api repos/${repo}/pages -X POST -f source='{"branch":"${branch}","path":"${path}"}'`);
+      this.runGh(`api repos/${repo}/pages -X POST -F source[branch]=${branch} -F source[path]=${path}`);
     } catch (e) {
       const msg = String(e);
-      if (!msg.includes('already enabled')) throw e;
+      if (!msg.includes('already enabled') && !msg.includes('409')) throw e;
     }
   }
 
