@@ -1,0 +1,1016 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GG Deploy — Domain → GitHub Pages in 60 seconds</title>
+  <meta name="description" content="Free hosting deserves free tooling. Connect any domain to GitHub Pages with automated DNS, SSL, and CNAME configuration.">
+  <link rel="icon" href="../img/icon.png" type="image/png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg-deep: #050a12;
+      --bg-primary: #0a1628;
+      --bg-elevated: #0f1f38;
+      --cyan-glow: #4fd1c5;
+      --cyan-bright: #63b3ed;
+      --cyan-dim: #2c7a7b;
+      --orange-hot: #ed8936;
+      --orange-warm: #f6ad55;
+      --text-primary: #e2e8f0;
+      --text-muted: #718096;
+      --text-dim: #4a5568;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Circuit Board Background */
+    .circuit-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    .circuit-bg svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .circuit-line {
+      stroke: var(--cyan-dim);
+      stroke-width: 1;
+      fill: none;
+      stroke-dasharray: 8 4;
+      animation: circuit-flow 20s linear infinite;
+    }
+
+    .circuit-line:nth-child(odd) {
+      animation-direction: reverse;
+      animation-duration: 25s;
+    }
+
+    .circuit-node {
+      fill: var(--cyan-glow);
+      animation: node-pulse 3s ease-in-out infinite;
+    }
+
+    .circuit-node:nth-child(3n) {
+      animation-delay: -1s;
+    }
+
+    .circuit-node:nth-child(3n+1) {
+      animation-delay: -2s;
+    }
+
+    @keyframes circuit-flow {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: -100; }
+    }
+
+    @keyframes node-pulse {
+      0%, 100% { opacity: 0.3; r: 3; }
+      50% { opacity: 1; r: 5; }
+    }
+
+    /* Gradient Overlay */
+    .gradient-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(79, 209, 197, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 80%, rgba(237, 137, 54, 0.06) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(10, 22, 40, 0.9) 0%, transparent 100%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Main Content */
+    .content {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: linear-gradient(to bottom, var(--bg-deep) 0%, transparent 100%);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--text-primary);
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+
+    .logo-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.25rem;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text span {
+      color: var(--orange-hot);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: var(--cyan-glow);
+    }
+
+    .nav-cta {
+      background: linear-gradient(135deg, var(--orange-hot), var(--orange-warm));
+      color: var(--bg-deep) !important;
+      padding: 0.6rem 1.25rem;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: transform 0.2s, box-shadow 0.2s !important;
+    }
+
+    .nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(237, 137, 54, 0.3);
+      color: var(--bg-deep) !important;
+    }
+
+    /* Hero Section */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      position: relative;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(79, 209, 197, 0.1);
+      border: 1px solid rgba(79, 209, 197, 0.3);
+      padding: 0.5rem 1rem;
+      border-radius: 50px;
+      font-size: 0.85rem;
+      color: var(--cyan-glow);
+      margin-bottom: 2rem;
+      animation: fade-up 0.8s ease-out;
+    }
+
+    .hero-badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--cyan-glow);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 1.5rem;
+      animation: fade-up 0.8s ease-out 0.1s both;
+    }
+
+    .hero h1 .highlight {
+      background: linear-gradient(135deg, var(--orange-hot), var(--orange-warm));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-subtitle {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: clamp(1.1rem, 3vw, 1.5rem);
+      color: var(--cyan-glow);
+      margin-bottom: 1rem;
+      animation: fade-up 0.8s ease-out 0.2s both;
+    }
+
+    .hero-subtitle .arrow {
+      display: inline-block;
+      animation: arrow-bounce 1.5s ease-in-out infinite;
+    }
+
+    @keyframes arrow-bounce {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(8px); }
+    }
+
+    .hero-description {
+      font-size: 1.1rem;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 3rem;
+      animation: fade-up 0.8s ease-out 0.3s both;
+    }
+
+    @keyframes fade-up {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Terminal Code Block */
+    .terminal {
+      background: var(--bg-primary);
+      border: 1px solid rgba(79, 209, 197, 0.2);
+      border-radius: 12px;
+      padding: 0;
+      width: 100%;
+      max-width: 500px;
+      text-align: left;
+      animation: fade-up 0.8s ease-out 0.4s both;
+      box-shadow:
+        0 4px 60px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(79, 209, 197, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    }
+
+    .terminal-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(79, 209, 197, 0.1);
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 12px 12px 0 0;
+    }
+
+    .terminal-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot.red { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green { background: #28c840; }
+
+    .terminal-title {
+      flex: 1;
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    .terminal-body {
+      padding: 1.25rem 1.5rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+    }
+
+    .terminal-line {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .terminal-prompt {
+      color: var(--cyan-glow);
+    }
+
+    .terminal-command {
+      color: var(--text-primary);
+    }
+
+    .terminal-command .npx { color: var(--orange-hot); }
+    .terminal-command .pkg { color: var(--cyan-bright); }
+    .terminal-command .arg { color: var(--orange-warm); }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 10px;
+      height: 20px;
+      background: var(--cyan-glow);
+      animation: cursor-blink 1s step-end infinite;
+      margin-left: 4px;
+      vertical-align: middle;
+    }
+
+    @keyframes cursor-blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    .terminal-comment {
+      color: var(--text-dim);
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+    }
+
+    /* CTA Buttons */
+    .hero-cta {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      animation: fade-up 0.8s ease-out 0.5s both;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 1.75rem;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--orange-hot), var(--orange-warm));
+      color: var(--bg-deep);
+      box-shadow: 0 4px 30px rgba(237, 137, 54, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 40px rgba(237, 137, 54, 0.4);
+    }
+
+    .btn-secondary {
+      background: rgba(79, 209, 197, 0.1);
+      color: var(--cyan-glow);
+      border: 1px solid rgba(79, 209, 197, 0.3);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(79, 209, 197, 0.2);
+      border-color: var(--cyan-glow);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--text-dim);
+      font-size: 0.8rem;
+      animation: fade-up 0.8s ease-out 0.8s both;
+    }
+
+    .scroll-indicator .mouse {
+      width: 24px;
+      height: 38px;
+      border: 2px solid var(--text-dim);
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .scroll-indicator .mouse::after {
+      content: '';
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 8px;
+      background: var(--cyan-glow);
+      border-radius: 2px;
+      animation: scroll-wheel 2s infinite;
+    }
+
+    @keyframes scroll-wheel {
+      0% { opacity: 1; transform: translateX(-50%) translateY(0); }
+      100% { opacity: 0; transform: translateX(-50%) translateY(12px); }
+    }
+
+    /* Features Section */
+    .features {
+      padding: 8rem 2rem;
+      position: relative;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--cyan-glow);
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .feature-card {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-elevated) 100%);
+      border: 1px solid rgba(79, 209, 197, 0.15);
+      border-radius: 16px;
+      padding: 2rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan-glow), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(79, 209, 197, 0.3);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .feature-card:hover::before {
+      opacity: 1;
+    }
+
+    .feature-icon {
+      width: 56px;
+      height: 56px;
+      background: rgba(79, 209, 197, 0.1);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.25rem;
+      font-size: 1.5rem;
+    }
+
+    .feature-card:nth-child(1) .feature-icon { color: var(--cyan-glow); }
+    .feature-card:nth-child(2) .feature-icon { color: var(--orange-hot); }
+    .feature-card:nth-child(3) .feature-icon { color: var(--cyan-bright); }
+    .feature-card:nth-child(4) .feature-icon { color: var(--orange-warm); }
+
+    .feature-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-description {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* How It Works Section */
+    .how-it-works {
+      padding: 8rem 2rem;
+      background: linear-gradient(180deg, transparent 0%, rgba(79, 209, 197, 0.02) 50%, transparent 100%);
+    }
+
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 3rem;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .step {
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .step-number {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, var(--orange-hot), var(--orange-warm));
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--bg-deep);
+    }
+
+    .step-content h3 {
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-content p {
+      color: var(--text-muted);
+    }
+
+    .step-content code {
+      display: inline-block;
+      background: var(--bg-primary);
+      border: 1px solid rgba(79, 209, 197, 0.2);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: var(--cyan-glow);
+      margin-top: 0.5rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      padding: 8rem 2rem;
+      text-align: center;
+    }
+
+    .cta-box {
+      max-width: 700px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-elevated) 100%);
+      border: 1px solid rgba(237, 137, 54, 0.2);
+      border-radius: 24px;
+      padding: 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(237, 137, 54, 0.1) 0%, transparent 50%);
+      animation: cta-glow 10s linear infinite;
+    }
+
+    @keyframes cta-glow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .cta-box > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .cta-box h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .cta-box p {
+      color: var(--text-muted);
+      margin-bottom: 2rem;
+    }
+
+    /* Footer */
+    footer {
+      padding: 3rem 2rem;
+      border-top: 1px solid rgba(79, 209, 197, 0.1);
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover {
+      color: var(--cyan-glow);
+    }
+
+    .footer-author {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+
+    .footer-author a {
+      color: var(--orange-warm);
+      text-decoration: none;
+    }
+
+    .footer-author a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      nav {
+        padding: 1rem 1.5rem;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 5rem 1.5rem 3rem;
+      }
+
+      .hero-cta {
+        flex-direction: column;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .btn {
+        justify-content: center;
+      }
+
+      .step {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .cta-box {
+        padding: 2.5rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Circuit Board Background -->
+  <div class="circuit-bg">
+    <svg viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+      <!-- Horizontal Lines -->
+      <path class="circuit-line" d="M0 100 H400 L450 150 H800 L850 100 H1920" />
+      <path class="circuit-line" d="M0 300 H200 L250 350 H600 L650 300 H1100 L1150 350 H1920" />
+      <path class="circuit-line" d="M0 500 H300 L350 450 H700 L750 500 H1200 L1250 450 H1920" />
+      <path class="circuit-line" d="M0 700 H150 L200 750 H550 L600 700 H950 L1000 750 H1920" />
+      <path class="circuit-line" d="M0 900 H350 L400 850 H750 L800 900 H1150 L1200 850 H1920" />
+
+      <!-- Vertical Lines -->
+      <path class="circuit-line" d="M200 0 V200 L250 250 V500 L200 550 V1080" />
+      <path class="circuit-line" d="M500 0 V150 L550 200 V450 L500 500 V750 L550 800 V1080" />
+      <path class="circuit-line" d="M800 0 V300 L850 350 V600 L800 650 V1080" />
+      <path class="circuit-line" d="M1100 0 V250 L1150 300 V550 L1100 600 V850 L1150 900 V1080" />
+      <path class="circuit-line" d="M1400 0 V200 L1450 250 V500 L1400 550 V800 L1450 850 V1080" />
+      <path class="circuit-line" d="M1700 0 V350 L1750 400 V650 L1700 700 V1080" />
+
+      <!-- Diagonal Lines -->
+      <path class="circuit-line" d="M0 200 L200 400 L200 600 L400 800" />
+      <path class="circuit-line" d="M1920 300 L1700 500 L1700 700 L1500 900" />
+
+      <!-- Nodes -->
+      <circle class="circuit-node" cx="200" cy="100" r="4" />
+      <circle class="circuit-node" cx="450" cy="150" r="4" />
+      <circle class="circuit-node" cx="850" cy="100" r="4" />
+      <circle class="circuit-node" cx="250" cy="350" r="4" />
+      <circle class="circuit-node" cx="650" cy="300" r="4" />
+      <circle class="circuit-node" cx="1150" cy="350" r="4" />
+      <circle class="circuit-node" cx="350" cy="450" r="4" />
+      <circle class="circuit-node" cx="750" cy="500" r="4" />
+      <circle class="circuit-node" cx="1250" cy="450" r="4" />
+      <circle class="circuit-node" cx="200" cy="750" r="4" />
+      <circle class="circuit-node" cx="600" cy="700" r="4" />
+      <circle class="circuit-node" cx="1000" cy="750" r="4" />
+      <circle class="circuit-node" cx="400" cy="850" r="4" />
+      <circle class="circuit-node" cx="800" cy="900" r="4" />
+      <circle class="circuit-node" cx="1200" cy="850" r="4" />
+      <circle class="circuit-node" cx="500" cy="200" r="4" />
+      <circle class="circuit-node" cx="800" cy="350" r="4" />
+      <circle class="circuit-node" cx="1100" cy="300" r="4" />
+      <circle class="circuit-node" cx="1400" cy="250" r="4" />
+      <circle class="circuit-node" cx="1700" cy="400" r="4" />
+    </svg>
+  </div>
+
+  <div class="gradient-overlay"></div>
+
+  <div class="content">
+    <!-- Navigation -->
+    <nav>
+      <a href="#" class="logo">
+        <img src="../img/icon.png" alt="GG Deploy" class="logo-icon">
+        <span class="logo-text">GG<span>Deploy</span></span>
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#how-it-works">How It Works</a>
+        <a href="https://github.com/abe238/gg-deploy" target="_blank">Docs</a>
+        <a href="https://github.com/abe238/gg-deploy" target="_blank" class="nav-cta">GitHub</a>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-badge">
+        <span>Open Source &amp; Free Forever</span>
+      </div>
+
+      <h1>
+        Free hosting deserves<br>
+        <span class="highlight">free tooling</span>
+      </h1>
+
+      <p class="hero-subtitle">
+        Domain <span class="arrow">→</span> GitHub Pages in 60 seconds
+      </p>
+
+      <p class="hero-description">
+        Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt.
+      </p>
+
+      <div class="terminal">
+        <div class="terminal-header">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+          <span class="terminal-title">Terminal</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-command">
+              <span class="npx">npx</span> <span class="pkg">gg-deploy</span> <span class="arg">ui</span>
+            </span>
+            <span class="terminal-cursor"></span>
+          </div>
+          <p class="terminal-comment"># Opens setup wizard at localhost:3847</p>
+        </div>
+      </div>
+
+      <div class="hero-cta">
+        <a href="https://github.com/abe238/gg-deploy" target="_blank" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          Get Started
+        </a>
+        <a href="#features" class="btn btn-secondary">
+          Learn More
+        </a>
+      </div>
+
+      <div class="scroll-indicator">
+        <div class="mouse"></div>
+        <span>Scroll to explore</span>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+      <div class="section-header">
+        <p class="section-label">Features</p>
+        <h2 class="section-title">Four ways to deploy</h2>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="4 17 10 11 4 5"></polyline>
+              <line x1="12" y1="19" x2="20" y2="19"></line>
+            </svg>
+          </div>
+          <h3 class="feature-title">CLI</h3>
+          <p class="feature-description">
+            Power users love the command line. Plan, apply, and check status with simple commands. Perfect for automation and scripts.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+              <line x1="8" y1="21" x2="16" y2="21"></line>
+              <line x1="12" y1="17" x2="12" y2="21"></line>
+            </svg>
+          </div>
+          <h3 class="feature-title">Web UI</h3>
+          <p class="feature-description">
+            Visual setup wizard walks you through everything. Create API keys, test connections, deploy with one click. No terminal needed.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+              <path d="M6 8h.01M10 8h.01M6 12h.01M10 12h.01M6 16h.01M10 16h.01"></path>
+              <path d="M14 8h6M14 12h6M14 16h6"></path>
+            </svg>
+          </div>
+          <h3 class="feature-title">Desktop App</h3>
+          <p class="feature-description">
+            Native app for Mac, Windows, and Linux. Coming soon with system tray integration and automatic updates.
+          </p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a10 10 0 1 0 10 10H12V2z"></path>
+              <path d="M12 2v10h10"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+          </div>
+          <h3 class="feature-title">AI Assistant (MCP)</h3>
+          <p class="feature-description">
+            Works with Claude Code and other AI tools via MCP. Just say "deploy example.com" and watch the magic happen.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section class="how-it-works" id="how-it-works">
+      <div class="section-header">
+        <p class="section-label">How It Works</p>
+        <h2 class="section-title">60 seconds to live</h2>
+      </div>
+
+      <div class="steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <h3>Enter your domain & repo</h3>
+            <p>Tell us your GoDaddy domain and GitHub repository. That's all the input we need.</p>
+            <code>gg-deploy plan mydomain.com user/repo</code>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <h3>We configure everything</h3>
+            <p>DNS A records point to GitHub's IPs. CNAME file added to your repo. GitHub Pages enabled. SSL provisioned automatically.</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <h3>You're live</h3>
+            <p>Your site is deployed. DNS propagates in 10-60 minutes. Check status anytime with health checks.</p>
+            <code>gg-deploy status mydomain.com user/repo</code>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+      <div class="cta-box">
+        <h2>Ready to deploy?</h2>
+        <p>Join developers who've simplified their GitHub Pages workflow. Open source, free forever, no strings attached.</p>
+        <a href="https://github.com/abe238/gg-deploy" target="_blank" class="btn btn-primary">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="https://github.com/abe238/gg-deploy" target="_blank">GitHub</a>
+          <a href="https://github.com/abe238/gg-deploy/issues" target="_blank">Issues</a>
+          <a href="https://github.com/abe238/gg-deploy/blob/main/LICENSE" target="_blank">AGPL-3.0</a>
+        </div>
+        <p class="footer-author">
+          Built by <a href="https://abediaz.ai" target="_blank">Abe Diaz</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // Smooth reveal on scroll
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    document.querySelectorAll('.feature-card, .step').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      observer.observe(el);
+    });
+
+    // Stagger feature cards
+    document.querySelectorAll('.feature-card').forEach((card, index) => {
+      card.style.transitionDelay = `${index * 0.1}s`;
+    });
+
+    // Stagger steps
+    document.querySelectorAll('.step').forEach((step, index) => {
+      step.style.transitionDelay = `${index * 0.15}s`;
+    });
+  </script>
+</body>
+</html>

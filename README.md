@@ -1,8 +1,12 @@
+<p align="center">
+  <img src="img/Banner.png" alt="GG Deploy Banner" width="100%">
+</p>
+
 # gg-deploy
 
-Automates GoDaddy DNS + GitHub Pages deployment. DNS records, CNAME file, Pages config, SSL—all in one command.
+**Free hosting deserves free tooling. Domain → GitHub Pages in 60 seconds.**
 
-Works from CLI, browser UI, or Claude Code.
+Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt. Works via CLI, desktop app, web UI, or AI assistant (MCP).
 
 ## Quick Start
 
