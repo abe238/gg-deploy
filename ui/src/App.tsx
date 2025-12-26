@@ -339,7 +339,7 @@ function App() {
         </button>
 
         <div className="footer">
-          <a href="https://github.com/abe238/godaddy-github-one-shot-page">gg-deploy</a>
+          <a href="https://github.com/abe238/gg-deploy">gg-deploy</a>
           {' · '}by <a href="https://abediaz.ai">Abe Diaz</a>
         </div>
       </div>
@@ -545,7 +545,7 @@ function App() {
             <SettingsIcon />
           </button>
         </div>
-        <p className="tagline">GoDaddy + GitHub Pages in one shot</p>
+        <p className="tagline">Domain → GitHub Pages in one command</p>
       </header>
 
       <div className="card">
@@ -636,7 +636,7 @@ function App() {
       </div>
 
       <div className="footer">
-        <a href="https://github.com/abe238/godaddy-github-one-shot-page">GitHub</a>
+        <a href="https://github.com/abe238/gg-deploy">GitHub</a>
         {' · '}
         <span className="mono">npx gg-deploy</span>
         {' · '}

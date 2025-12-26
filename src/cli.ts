@@ -12,7 +12,7 @@ const program = new Command();
 
 program
   .name('gg-deploy')
-  .description('AI-native CLI for GoDaddy + GitHub Pages one-shot deployment')
+  .description('Deploy any domain to GitHub Pages in one command')
   .version('0.1.0');
 
 program
@@ -60,7 +60,7 @@ program
     const description = {
       name: 'gg-deploy',
       version: '0.1.0',
-      description: 'GoDaddy + GitHub Pages one-shot deployment',
+      description: 'Deploy any domain to GitHub Pages in one command',
       commands: [
         {
           name: 'plan',

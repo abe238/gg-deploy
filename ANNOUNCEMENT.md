@@ -9,7 +9,7 @@ One command. Domain + repo → DNS configured, CNAME created, Pages enabled, SSL
 
 It's the tool I wish existed when I was deploying abediaz.ai.
 
-→ https://github.com/abe238/godaddy-github-one-shot-page
+→ https://github.com/abe238/gg-deploy
 
 ---
 
@@ -59,7 +59,7 @@ Three interfaces:
 - Local web UI for the click-enjoyers
 - MCP server for AI assistants (works with Claude Desktop)
 
-Open source: github.com/abe238/godaddy-github-one-shot-page
+Open source: github.com/abe238/gg-deploy
 
 Built this after deploying abediaz.ai and thinking "I never want to do this manually again."
 ```
@@ -89,7 +89,7 @@ Limitations:
 - Public repos only unless you have GitHub Pro
 - No subdomain support beyond www
 
-Source: https://github.com/abe238/godaddy-github-one-shot-page
+Source: https://github.com/abe238/gg-deploy
 ```
 
 ## Key points to emphasize:

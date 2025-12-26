@@ -1,7 +1,7 @@
 {
-  "name": "godaddy-github-one-shot-page",
+  "name": "gg-deploy",
   "version": "0.1.0",
-  "description": "AI-native CLI for GoDaddy + GitHub Pages one-shot deployment. Human-friendly. Agent-native.",
+  "description": "Deploy any domain to GitHub Pages in one command. DNS records, CNAME, SSL—automated.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -28,7 +28,7 @@
   "license": "AGPL-3.0-only",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/abe238/godaddy-github-one-shot-page.git"
+    "url": "git+https://github.com/abe238/gg-deploy.git"
   },
   "engines": {
     "node": ">=18.0.0"
