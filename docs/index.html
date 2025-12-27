@@ -1189,19 +1189,19 @@
 
     document.querySelectorAll('.feature-card, .step').forEach(el => {
       el.style.opacity = '0';
-      el.style.transform = 'translateY(30px)';
-      el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = 'opacity 0.35s ease-out, transform 0.35s ease-out';
       observer.observe(el);
     });
 
-    // Stagger feature cards
+    // Stagger feature cards (faster)
     document.querySelectorAll('.feature-card').forEach((card, index) => {
-      card.style.transitionDelay = `${index * 0.1}s`;
+      card.style.transitionDelay = `${index * 0.05}s`;
     });
 
-    // Stagger steps
+    // Stagger steps (faster)
     document.querySelectorAll('.step').forEach((step, index) => {
-      step.style.transitionDelay = `${index * 0.15}s`;
+      step.style.transitionDelay = `${index * 0.08}s`;
     });
   </script>
 </body>
