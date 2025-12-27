@@ -8,8 +8,6 @@ gg-deploy is my latest: domain deployment automated, built in a weekend, open so
 
 **One command. One click. One prompt.** Works via CLI, desktop app, web UI, or AI assistant (MCP).
 
-Hola. I'm [Abe Diaz](https://abediaz.ai). By day, I lead Amazon's disaster relief team, which uses technology and logistics to deliver 26+ million relief items across 200+ disasters worldwide. On weekends, I use AI to build artisanal tools like this.
-
 ## Quick Start
 
 ```bash
@@ -385,7 +383,7 @@ AGPL-3.0 — Free to use, modify, and distribute. Forks must remain open source.
 
 ## About the Builder
 
-**[Abe Diaz](https://abediaz.ai)** is the Sr. Manager of Disaster Relief at Amazon, where he leads a team using AI and logistics to respond to disasters worldwide. He builds artisanal developer tools on weekends because he loves building.
+Hola. I'm **[Abe Diaz](https://abediaz.ai)**. By day, I'm Sr. Manager of Disaster Relief at Amazon, leading a team that uses AI and logistics to deliver 26+ million relief items across 200+ disasters worldwide. On weekends, I build artisanal developer tools like this :-P
 
 - 💼 [linkedin.com/in/abediaz](https://linkedin.com/in/abediaz)
 - 🌐 [abediaz.ai](https://abediaz.ai)
