@@ -1,12 +1,14 @@
-<p align="center">
-  <img src="img/Banner.png" alt="GG Deploy Banner" width="100%">
-</p>
+![GG Deploy Banner](img/Banner.png)
 
 # gg-deploy
 
 **Free hosting deserves free tooling. Domain → GitHub Pages in 60 seconds.**
 
-Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt. Works via CLI, desktop app, web UI, or AI assistant (MCP).
+I'm [Abe Diaz](https://abediaz.ai). By day, I lead Amazon's disaster relief team, which uses technology and logistics to deliver 26+ million relief items across 200+ disasters worldwide. On weekends, I use AI to build artisanal tools like this.
+
+gg-deploy is my latest: domain deployment automated, built in a weekend, open source, free forever. It's not going to save the world, but it might save you an hour of DNS configuration.
+
+**One command. One click. One prompt.** Works via CLI, desktop app, web UI, or AI assistant (MCP).
 
 ## Quick Start
 
@@ -20,6 +22,49 @@ Or via CLI:
 npx gg-deploy plan example.com user/repo    # Preview (safe)
 npx gg-deploy apply example.com user/repo   # Deploy
 npx gg-deploy status example.com user/repo  # Health check
+```
+
+## Why I Built This
+
+GitHub Pages is free. Domain registration is cheap. But connecting them? That's still 15 minutes of DNS googling, A-record guessing, and "did I break my email forwarding again?" anxiety.
+
+I wanted deployment to be as fast as the hosting is free (for public repos). So I built gg-deploy over a weekend; a CLI for power users, web UI for everyone else, MCP for AI agents, and desktop apps because why not.
+
+**AGPL-licensed** because good tools should stay free.
+
+## Desktop App
+
+Download from [GitHub Releases](https://github.com/abe238/gg-deploy/releases):
+- **macOS**: `.dmg` (Apple Silicon or Intel)
+- **Windows**: `.msi` installer
+- **Linux**: `.AppImage` or `.deb`
+
+### macOS First Run
+
+The app isn't signed with an Apple certificate. On first launch:
+
+**Option 1: Right-click method**
+1. Right-click (or Control+click) on GG Deploy
+2. Click "Open" from the menu
+3. Click "Open" in the dialog
+
+**Option 2: Terminal (one command)**
+```bash
+xattr -cr "/Applications/GG Deploy.app"
+```
+
+This is a one-time step—the app runs normally after.
+
+### Windows First Run
+
+Click **More info** → **Run anyway** on the SmartScreen prompt.
+
+### Linux
+
+Make executable and run:
+```bash
+chmod +x GG.Deploy_*.AppImage
+./GG.Deploy_*.AppImage
 ```
 
 ## Requirements
@@ -324,4 +369,19 @@ AGPL-3.0 — Free to use, modify, and distribute. Forks must remain open source.
 
 ---
 
-Built by [Abe Diaz](https://abediaz.ai) | [GitHub](https://github.com/abe238)
+## About the Builder
+
+**[Abe Diaz](https://abediaz.ai)** is the Sr. Manager of Disaster Relief at Amazon, where he leads a team using AI and logistics to respond to disasters worldwide. He builds artisanal developer tools on weekends because he loves building.
+
+- 💼 [linkedin.com/in/abediaz](https://linkedin.com/in/abediaz)
+- 🌐 [abediaz.ai](https://abediaz.ai)
+- 🐙 [github.com/abe238](https://github.com/abe238)
+- 🐦 [@abe238](https://twitter.com/abe238)
+
+### Other Open Source Projects
+
+| Project | Description |
+|---------|-------------|
+| [gemini-deep-research](https://github.com/abe238/gemini-deep-research) | CLI for Gemini's Deep Research Agent |
+| [aipm-resume-analyzer](https://github.com/abe238/aipm-resume-analyzer) | Resume analysis against AI PM frameworks |
+| [project-kickoff](https://github.com/abe238/project-kickoff) | Scaffold AI production-ready projects |

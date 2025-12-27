@@ -1041,6 +1041,153 @@
       text-decoration: underline;
     }
 
+    /* About the Builder Section */
+    .about-builder {
+      padding: 6rem 2rem;
+      background: linear-gradient(180deg, transparent 0%, rgba(237, 137, 54, 0.02) 50%, transparent 100%);
+    }
+
+    .about-builder-content {
+      max-width: 800px;
+      margin: 0 auto;
+      display: flex;
+      gap: 3rem;
+      align-items: flex-start;
+    }
+
+    .builder-photo {
+      flex-shrink: 0;
+      width: 140px;
+      height: 140px;
+      border-radius: 20px;
+      object-fit: cover;
+      border: 2px solid rgba(237, 137, 54, 0.3);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .builder-info h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1rem;
+      color: var(--text-primary);
+    }
+
+    .builder-info h2 span {
+      color: var(--orange-warm);
+    }
+
+    .builder-info p {
+      color: var(--text-muted);
+      margin-bottom: 1rem;
+      line-height: 1.8;
+    }
+
+    .builder-info .agpl-note {
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .builder-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--cyan-glow);
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 0.5rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .builder-link:hover {
+      color: var(--cyan-bright);
+      transform: translateX(4px);
+    }
+
+    .builder-link svg {
+      transition: transform 0.2s;
+    }
+
+    .builder-link:hover svg {
+      transform: translateX(4px);
+    }
+
+    @media (max-width: 700px) {
+      .about-builder-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .builder-photo {
+        width: 120px;
+        height: 120px;
+      }
+    }
+
+    /* Updated Footer Bio */
+    .footer-bio {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      max-width: 600px;
+      margin: 0 auto 1.5rem;
+      text-align: left;
+    }
+
+    .footer-headshot {
+      width: 64px;
+      height: 64px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(79, 209, 197, 0.2);
+      flex-shrink: 0;
+    }
+
+    .footer-bio-text strong {
+      display: block;
+      color: var(--text-primary);
+      margin-bottom: 0.25rem;
+    }
+
+    .footer-bio-text p {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin: 0 0 0.5rem;
+      line-height: 1.5;
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .footer-social a {
+      color: var(--text-dim);
+      text-decoration: none;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .footer-social a:hover {
+      color: var(--cyan-glow);
+    }
+
+    .footer-credit {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+    }
+
+    @media (max-width: 600px) {
+      .footer-bio {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-social {
+        justify-content: center;
+      }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
       nav {
@@ -1141,7 +1288,7 @@
       <div class="nav-links">
         <a href="#features">Features</a>
         <a href="#how-it-works">How It Works</a>
-        <a href="https://github.com/abe238/gg-deploy" target="_blank">Docs</a>
+        <a href="#about">About</a>
         <a href="https://github.com/abe238/gg-deploy" target="_blank" class="nav-cta">GitHub</a>
       </div>
     </nav>
@@ -1162,7 +1309,7 @@
       </p>
 
       <p class="hero-description">
-        Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt.
+        Configure and connect any domain to free hosting via GitHub Pages—DNS, SSL, CNAME—automated. One command. One click. One prompt. Built with AI, given away forever.
       </p>
 
       <div class="terminal">
@@ -1338,6 +1485,34 @@
       </div>
     </section>
 
+    <!-- About the Builder Section -->
+    <section class="about-builder" id="about">
+      <div class="about-builder-content">
+        <img src="../img/abe-headshot.jpg" alt="Abe Diaz" class="builder-photo" onerror="this.style.display='none'">
+        <div class="builder-info">
+          <h2>Built by a <span>disaster relief technologist</span></h2>
+          <p>
+            I'm Abe Diaz. At Amazon, I lead a team that uses AI and logistics to deliver relief supplies within hours of disasters striking—26+ million items across 200+ disasters and counting.
+          </p>
+          <p>
+            On weekends, I apply the same approach to developer tools: identify friction, build fast, give it away.
+          </p>
+          <p>
+            gg-deploy started as a personal itch. Connecting domains to GitHub Pages shouldn't require 15 minutes of DNS archaeology. So I spent a weekend and built what I wanted: deployment in 60 seconds, not 60 minutes.
+          </p>
+          <p class="agpl-note">
+            AGPL-licensed because the best tools are the ones everyone can use—and improve.
+          </p>
+          <a href="https://abediaz.ai" target="_blank" class="builder-link">
+            Read more about my work
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="cta-section">
       <div class="cta-box">
@@ -1355,14 +1530,25 @@
     <!-- Footer -->
     <footer>
       <div class="footer-content">
+        <div class="footer-bio">
+          <img src="../img/abe-headshot.jpg" alt="Abe Diaz" class="footer-headshot" onerror="this.style.display='none'">
+          <div class="footer-bio-text">
+            <strong>Abe Diaz</strong>
+            <p>Sr. Manager, Disaster Relief @ Amazon. Building AI and humanitarian logistics tools by day, developer productivity by night.</p>
+            <div class="footer-social">
+              <a href="https://linkedin.com/in/abediaz" target="_blank">LinkedIn</a>
+              <a href="https://abediaz.ai" target="_blank">Website</a>
+              <a href="https://github.com/abe238" target="_blank">GitHub</a>
+              <a href="https://twitter.com/abe238" target="_blank">Twitter</a>
+            </div>
+          </div>
+        </div>
         <div class="footer-links">
-          <a href="https://github.com/abe238/gg-deploy" target="_blank">GitHub</a>
+          <a href="https://github.com/abe238/gg-deploy" target="_blank">Repository</a>
           <a href="https://github.com/abe238/gg-deploy/issues" target="_blank">Issues</a>
           <a href="https://github.com/abe238/gg-deploy/blob/main/LICENSE" target="_blank">AGPL-3.0</a>
         </div>
-        <p class="footer-author">
-          Built by <a href="https://abediaz.ai" target="_blank">Abe Diaz</a>
-        </p>
+        <p class="footer-credit">Open source. Free forever.</p>
       </div>
     </footer>
   </div>
@@ -1401,7 +1587,7 @@
     `;
     document.head.appendChild(style);
 
-    document.querySelectorAll('.feature-card, .step, .cta-box').forEach((el, index) => {
+    document.querySelectorAll('.feature-card, .step, .cta-box, .about-builder-content').forEach((el, index) => {
       el.classList.add('reveal-element');
       el.style.transitionDelay = `${index * 0.06}s`;
       observer.observe(el);
