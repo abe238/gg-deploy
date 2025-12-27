@@ -507,6 +507,101 @@
       box-shadow: 0 8px 25px rgba(79, 209, 197, 0.15);
     }
 
+    /* Download Section */
+    .download-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 2rem;
+      animation: fade-up 0.8s ease-out 0.45s both;
+    }
+
+    .download-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .download-divider::before,
+    .download-divider::after {
+      content: '';
+      width: 60px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--text-dim), transparent);
+    }
+
+    .download-buttons {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .download-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1.25rem;
+      background: rgba(79, 209, 197, 0.08);
+      border: 1px solid rgba(79, 209, 197, 0.2);
+      border-radius: 8px;
+      color: var(--cyan-glow);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: all var(--duration-normal) var(--spring-smooth);
+    }
+
+    .download-btn:hover {
+      background: rgba(79, 209, 197, 0.15);
+      border-color: var(--cyan-glow);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(79, 209, 197, 0.15);
+    }
+
+    .download-btn:active {
+      transform: scale(0.97);
+    }
+
+    .download-btn svg {
+      opacity: 0.8;
+      transition: transform var(--duration-normal) var(--spring-bounce);
+    }
+
+    .download-btn:hover svg {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    /* Highlight detected platform */
+    .download-btn.detected {
+      background: rgba(79, 209, 197, 0.15);
+      border-color: var(--cyan-glow);
+      box-shadow: 0 0 20px rgba(79, 209, 197, 0.15);
+    }
+
+    .download-btn.detected::after {
+      content: '✓';
+      margin-left: 0.25rem;
+      font-size: 0.75rem;
+    }
+
+    .download-all-link {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-decoration: none;
+      transition: color var(--duration-fast);
+    }
+
+    .download-all-link:hover {
+      color: var(--cyan-glow);
+    }
+
     /* Scroll Indicator */
     .scroll-indicator {
       position: absolute;
@@ -1130,12 +1225,34 @@
         </div>
       </div>
 
+      <!-- Or Download section -->
+      <div class="download-section">
+        <span class="download-divider">or download the binary</span>
+        <div class="download-buttons">
+          <a href="https://github.com/abe238/gg-deploy/releases/download/v1.1.1/gg-deploy-1.1.1-macos-arm64.tar.gz" class="download-btn" data-platform="mac-arm">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            <span>macOS</span>
+          </a>
+          <a href="https://github.com/abe238/gg-deploy/releases/download/v1.1.1/gg-deploy-1.1.1-win-x64.zip" class="download-btn" data-platform="windows">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M0 3.449L9.75 2.1v9.451H0m10.949-9.602L24 0v11.4H10.949M0 12.6h9.75v9.451L0 20.699M10.949 12.6H24V24l-13.051-1.95"/></svg>
+            <span>Windows</span>
+          </a>
+          <a href="https://github.com/abe238/gg-deploy/releases/download/v1.1.1/gg-deploy-1.1.1-linux-x64.tar.gz" class="download-btn" data-platform="linux">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.504 0c-.155 0-.315.008-.48.021-4.226.333-3.105 4.807-3.17 6.298-.076 1.092-.3 1.953-1.05 3.02-.885 1.051-2.127 2.75-2.716 4.521-.278.832-.41 1.684-.287 2.489.117.779.484 1.55 1.09 2.154.63.628 1.512 1.023 2.447 1.23.914.194 1.924.223 2.837.027 2.003-.395 3.607-1.563 4.678-3.18 1.08-1.648 1.672-3.708 1.764-5.857.045-.952-.145-1.953-.543-2.847-.404-.909-1.014-1.714-1.797-2.353-.743-.608-1.609-1.073-2.51-1.379-.854-.29-1.72-.437-2.562-.437zm.018 1.001c.679-.004 1.375.11 2.058.358.768.277 1.497.672 2.11 1.175.638.523 1.134 1.184 1.467 1.933.337.757.495 1.584.455 2.378-.081 1.934-.598 3.769-1.526 5.191-.94 1.43-2.318 2.401-4.039 2.741-.748.147-1.574.123-2.35-.044-.757-.166-1.455-.479-1.943-.949-.468-.452-.751-1.013-.836-1.579-.09-.603.021-1.263.252-1.957.527-1.579 1.604-3.093 2.391-4.012.598-.704.829-1.415.905-2.314.051-.657.177-4.929 2.555-4.92z"/></svg>
+            <span>Linux</span>
+          </a>
+        </div>
+        <a href="https://github.com/abe238/gg-deploy/releases" class="download-all-link" target="_blank">
+          View all releases →
+        </a>
+      </div>
+
       <div class="hero-cta">
         <a href="https://github.com/abe238/gg-deploy" target="_blank" class="btn btn-primary">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
           </svg>
-          Get Started
+          View on GitHub
         </a>
         <a href="#features" class="btn btn-secondary">
           Learn More
@@ -1411,6 +1528,29 @@
       link.addEventListener('mouseenter', () => underline.style.width = '100%');
       link.addEventListener('mouseleave', () => underline.style.width = '0');
     });
+
+    // Platform detection for download buttons
+    (function detectPlatform() {
+      const ua = navigator.userAgent.toLowerCase();
+      const platform = navigator.platform.toLowerCase();
+
+      let detectedPlatform = null;
+
+      if (platform.includes('mac') || ua.includes('mac')) {
+        detectedPlatform = 'mac-arm';
+      } else if (platform.includes('win') || ua.includes('win')) {
+        detectedPlatform = 'windows';
+      } else if (platform.includes('linux') || ua.includes('linux')) {
+        detectedPlatform = 'linux';
+      }
+
+      if (detectedPlatform) {
+        const btn = document.querySelector(`.download-btn[data-platform="${detectedPlatform}"]`);
+        if (btn) {
+          btn.classList.add('detected');
+        }
+      }
+    })();
   </script>
 </body>
 </html>
