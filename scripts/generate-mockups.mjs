@@ -2,7 +2,11 @@
 import fs from 'fs';
 import path from 'path';
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '***REDACTED***';
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+if (!GEMINI_API_KEY) {
+  console.error('Error: GEMINI_API_KEY environment variable is required');
+  process.exit(1);
+}
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent';
 
 const PROMPT = 'Place this screenshot on a MacBook Pro screen. Front-facing view, straight on, screen fills most of the frame. The text on screen must be sharp and clearly readable. Simple white or light gray background. No angle, no tilt, looking directly at the screen.';
